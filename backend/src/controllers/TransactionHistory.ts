@@ -5,11 +5,73 @@ const prisma = new PrismaClient();
 
 
 
+
+
+/**
+ * @swagger
+ * components:
+ *   securitySchemes:
+ *     BearerAuth:
+ *       type: http
+ *       scheme: bearer
+ *       bearerFormat: JWT
+ * 
+ * /api/v1/getuserinfo/{id}:
+ *   get:
+ *     summary: Fetch the information of the user
+ *     tags: [Users]
+ *     security:
+ *       - BearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         schema:
+ *           type: integer
+ *         required: true
+ *         description: Id of the user
+ *     responses:
+ *       200:
+ *         description: Successfully fetched the user info
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     name:
+ *                       type: string
+ *                       example: "John Doe"
+ *                 message:
+ *                   type: string
+ *                   example: "Successfully fetched the user info"
+ *       500:
+ *         description: Error fetching user
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 message: 
+ *                   type: string
+ *                   example: "Error Fetching User."
+ */
+
+
 export const getUserInfo = async(req: Request, res: Response): Promise<void> => {
     try {
         authenticate(req, res, async() => {
-            const {userId} = req.body
+            // const {userId} = req.body
+            const id = req.params.id;
 
+            const userId = parseInt(id);
             const getUser = await prisma.users.findUnique({
                 where: {
                     id: userId
@@ -35,11 +97,94 @@ export const getUserInfo = async(req: Request, res: Response): Promise<void> => 
     }
 }
 
+/**
+ * @swagger
+ * components:
+ *   securitySchemes:
+ *     BearerAuth:
+ *       type: http
+ *       scheme: bearer
+ *       bearerFormat: JWT
+ * 
+ * /api/v1/sentfundsinfo/{id}:
+ *   get:
+ *     summary: Fetch the history of sent funds
+ *     tags: [Transaction]
+ *     security:
+ *       - BearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         schema:
+ *           type: integer
+ *         required: true
+ *         description: Id of the user
+ *     responses:
+ *       404:
+ *         description: No transaction found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success: 
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *                   example: No transaction found.
+ *       200:
+ *         description: Successfully fetched the transactions
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 data:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       id:
+ *                         type: integer
+ *                         example: 1
+ *                       senderName:
+ *                         type: string
+ *                         example: "John Doe"
+ *                       receiverName:
+ *                         type: string
+ *                         example: "Jane Smith"
+ *                       amountTransferred:
+ *                         type: string
+ *                         example: "100.00"
+ *                 message:
+ *                   type: string
+ *                   example: Successfully fetched the transactions.
+ *       500:
+ *         description: Error fetching the transactions
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 message: 
+ *                   type: string
+ *                   example: Error fetching transactions.
+ */
+
 export const transferFundsHistorySent = async(req: Request, res: Response): Promise<void> => {
     try {
 
         authenticate(req, res, async() => {
-            const {userId} = req.body;
+            const id = req.params.id;
+
+            const userId = parseInt(id);
 
             const findTransactions = await prisma.transaction.findMany({
                 where: {

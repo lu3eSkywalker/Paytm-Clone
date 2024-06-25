@@ -26,11 +26,12 @@ router.post('/deductamount', BankAPIDeduct);
 router.post('/fundsmerchant', transferFundsToMerchant);
 
 //Fetch
-router.get('/getuserinfo', getUserInfo);
+// router.get('/getuserinfo', getUserInfo);
+router.get('/getuserinfo/:id', getUserInfo);
 router.get('/byname', searchuserByName);
 router.get('/byemail', searchuserByEmail);
 
-router.get('/sentfundsinfo', transferFundsHistorySent);
+router.get('/sentfundsinfo/:id', transferFundsHistorySent);
 router.get('/receivedfundinfo', transferFundsHistoryReceived);
 router.get('/sentfundsinfobank', transferHistoryWithdrawToBankAcc);
 router.get('/receivedfundsinfobank', transferHistoryBankAmountaddToUserWallet);

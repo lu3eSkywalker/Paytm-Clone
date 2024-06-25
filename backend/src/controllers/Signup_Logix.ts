@@ -14,7 +14,71 @@ const SignupSchema = z.object({
     name: z.string().min(2).max(20),
     email: z.string().email(),
     password: z.string().min(5)
-})
+});
+
+
+/**
+ * @swagger
+ * /api/v1/signupuser:
+ *   post:
+ *     summary: Create a new user
+ *     tags: [Users]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - name
+ *               - email
+ *               - password
+ *             properties:
+ *               name:
+ *                 type: string
+ *                 description: The user's name
+ *               email:
+ *                 type: string
+ *                 description: The user's email
+ *               password:
+ *                 type: string
+ *                 description: The user's password
+ *     responses:
+ *       200:
+ *         description: Signed up successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                 data:
+ *                   type: object
+ *                 message:
+ *                   type: string
+ *       411:
+ *         description: Validation error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: object
+ *       500:
+ *         description: Entry Creation Failed
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                 message:
+ *                   type: string
+ */
+
 
 export const signupUser = async(req: Request, res: Response): Promise<void> => {
     try {
@@ -65,6 +129,79 @@ export const signupUser = async(req: Request, res: Response): Promise<void> => {
     }
 }
 
+
+/**
+ * @swagger
+ * /api/v1/signupmerchant:
+ *   post:
+ *     summary: Create a new merchant account
+ *     tags: [Merchant]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - name
+ *               - email
+ *               - password
+ *             properties:
+ *               name:
+ *                 type: string
+ *                 description: The merchant's name
+ *               email:
+ *                 type: string
+ *                 description: The merchant's email
+ *               password:
+ *                 type: string
+ *                 description: The merchant's password
+ *     responses:
+ *       200:
+ *         description: Signed up successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                      name: 
+ *                          type: string
+ *                      email:
+ *                          type: string
+ *                      password:
+ *                          type: string
+ *                 message:
+ *                   type: string
+ *       411:
+ *         description: Validation error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: object
+ *       500:
+ *         description: Entry Creation Failed
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                 message:
+ *                   type: string
+ */
+
+
+
+
 export const signupMerchant = async(req: Request, res: Response): Promise<void> => {
     try {
         const parsedInput = SignupSchema.safeParse(req.body);
@@ -111,10 +248,101 @@ export const signupMerchant = async(req: Request, res: Response): Promise<void> 
     }
 }
 
+
 const LoginSchema = z.object({
     email: z.string().email(),
     password: z.string().min(5),
 });
+
+
+/**
+ * @swagger
+ * /api/v1/loginuser:
+ *   post:
+ *     summary: Login to user's account
+ *     tags: [Users]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - email
+ *               - password
+ *             properties:
+ *               email:
+ *                 type: string
+ *                 description: The user's email
+ *               password:
+ *                 type: string
+ *                 description: The user's password
+ *     responses:
+ *       200:
+ *         description: Logged in Successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                      name: 
+ *                          type: string
+ *                      email:
+ *                          type: string
+ *                      password:
+ *                          type: string
+ *                 token: 
+ *                    type: string
+ *                 message:
+ *                   type: string
+ *       401:
+ *         description: Unauthorized - Password incorrect
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                  success:
+ *                      type: boolean
+ *                  message:
+ *                      type: string
+ *       404:
+ *         description: User not found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                 message:
+ *                   type: string
+ *       411:
+ *         description: Validation error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: object
+ *       500:
+ *         description: Internal Server Error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                 message:
+ *                   type: string
+ */
 
 
 export const loginUser = async(req: Request<{email: string, password: string}>, res: Response): Promise<void> => {
@@ -177,6 +405,96 @@ export const loginUser = async(req: Request<{email: string, password: string}>, 
         })
     }
 }
+
+
+/**
+ * @swagger
+ * /api/v1/loginmerchant:
+ *   post:
+ *     summary: Login to merchant's account
+ *     tags: [Merchant]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - email
+ *               - password
+ *             properties:
+ *               email:
+ *                 type: string
+ *                 description: The merchant's email
+ *               password:
+ *                 type: string
+ *                 description: The merchant's password
+ *     responses:
+ *       200:
+ *         description: Logged in Successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                      name: 
+ *                          type: string
+ *                      email:
+ *                          type: string
+ *                      password:
+ *                          type: string
+ *                 token: 
+ *                    type: string
+ *                 message:
+ *                   type: string
+ *       401:
+ *         description: Unauthorized - Password incorrect
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                  success:
+ *                      type: boolean
+ *                  message:
+ *                      type: string
+ *       404:
+ *         description: merchant not found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                 message:
+ *                   type: string
+ *       411:
+ *         description: Validation error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: object
+ *       500:
+ *         description: Internal Server Error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                 message:
+ *                   type: string
+ */
 
 
 export const loginMechant = async(req: Request<{email: string, password: string}>, res: Response): Promise<void> => {
