@@ -8,8 +8,89 @@ import authenticate from "../middlewares/Middleware";
 
 const transferFundSchema = z.object({
     amount: z.number().min(1).max(9999999999)
-})
-
+});
+/**
+ * @swagger
+ * components:
+ *   securitySchemes:
+ *     BearerAuth:
+ *       type: http
+ *       scheme: bearer
+ *       bearerFormat: JWT
+ * 
+ * /api/v1/transferfund:
+ *   post:
+ *     summary: Transfer funds from one user to another
+ *     tags: [Wallet]
+ *     security:
+ *       - BearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               user1Id:
+ *                 type: integer
+ *                 description: ID of the sender
+ *               user2Id:
+ *                 type: integer
+ *                 description: ID of the receiver
+ *               amount: 
+ *                 type: integer
+ *                 description: Amount to be transferred
+ *             required:
+ *               - user1Id
+ *               - user2Id
+ *               - amount
+ *     responses:
+ *       404:
+ *         description: Insufficient Balance
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success: 
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *                   example: Insufficient Balance
+ *       200:
+ *         description: Successfully transferred the funds
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 user1balance:
+ *                   type: integer
+ *                   example: 900
+ *                 user2balance:
+ *                   type: integer
+ *                   example: 1100
+ *                 message:
+ *                   type: string
+ *                   example: Successfully transferred the funds
+ *       500:
+ *         description: Error transferring the funds
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 message: 
+ *                   type: string
+ *                   example: Error transferring the funds
+ */
 
 
 export const transferFunds = async(req: Request, res: Response): Promise<void> => {
@@ -100,10 +181,93 @@ export const transferFunds = async(req: Request, res: Response): Promise<void> =
         console.log('Error: ', error)
         res.status(500).json({
             success: false,
-            message: 'Entry Creation Failed',
+            message: 'Entry transferring the funds',
         })
     }
 }
+
+/**
+ * @swagger
+ * components:
+ *   securitySchemes:
+ *     BearerAuth:
+ *       type: http
+ *       scheme: bearer
+ *       bearerFormat: JWT
+ * 
+ * /api/v1/fundsmerchant:
+ *   post:
+ *     summary: Transfer funds from one user to another
+ *     tags: [Wallet]
+ *     security:
+ *       - BearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               userId:
+ *                 type: integer
+ *                 description: ID of the sender
+ *               MerchantId:
+ *                 type: integer
+ *                 description: ID of the merchant
+ *               amount: 
+ *                 type: integer
+ *                 description: Amount to be transferred
+ *             required:
+ *               - userId
+ *               - MerchantId
+ *               - amount
+ *     responses:
+ *       404:
+ *         description: Insufficient Balance
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success: 
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *                   example: Insufficient Balance
+ *       200:
+ *         description: Successfully transferred the funds
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 userbalance:
+ *                   type: integer
+ *                   example: 900
+ *                 merchantbalance:
+ *                   type: integer
+ *                   example: 1100
+ *                 message:
+ *                   type: string
+ *                   example: Successfully transferred the funds
+ *       500:
+ *         description: Error transferring the funds
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 message: 
+ *                   type: string
+ *                   example: Error transferring the funds
+ */
 
 
 export const transferFundsToMerchant = async(req: Request, res: Response): Promise<void> => {

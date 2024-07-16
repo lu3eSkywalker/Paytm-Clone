@@ -3,10 +3,6 @@ import { PrismaClient } from '@prisma/client';
 import authenticate from "../middlewares/Middleware";
 const prisma = new PrismaClient();
 
-
-
-
-
 /**
  * @swagger
  * components:
@@ -235,12 +231,94 @@ export const transferFundsHistorySent = async(req: Request, res: Response): Prom
     }
 }
 
+/**
+ * @swagger
+ * components:
+ *   securitySchemes:
+ *     BearerAuth:
+ *       type: http
+ *       scheme: bearer
+ *       bearerFormat: JWT
+ * 
+ * /api/v1/receivedfundsinfo/{id}:
+ *   get:
+ *     summary: Fetch the history of received funds
+ *     tags: [Transaction]
+ *     security:
+ *       - BearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         schema:
+ *           type: integer
+ *         required: true
+ *         description: Id of the user
+ *     responses:
+ *       404:
+ *         description: No transaction found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success: 
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *                   example: No transaction found.
+ *       200:
+ *         description: Successfully fetched the transactions
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 data:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       id:
+ *                         type: integer
+ *                         example: 1
+ *                       senderName:
+ *                         type: string
+ *                         example: "John Doe"
+ *                       receiverName:
+ *                         type: string
+ *                         example: "Jane Smith"
+ *                       amountTransferred:
+ *                         type: string
+ *                         example: "100.00"
+ *                 message:
+ *                   type: string
+ *                   example: Successfully fetched the transactions.
+ *       500:
+ *         description: Error fetching the transactions
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 message: 
+ *                   type: string
+ *                   example: Error fetching transactions.
+ */
 
 export const transferFundsHistoryReceived = async(req: Request, res: Response): Promise<void> => {
     try{
 
         authenticate(req, res, async() => {
-            const {userId} = req.body;
+
+            const id = req.params.id;
+            const userId = parseInt(id);
 
             const findTransactions = await prisma.transaction.findMany({
                 where: {
@@ -292,10 +370,94 @@ export const transferFundsHistoryReceived = async(req: Request, res: Response): 
     }
 }
 
+/**
+ * @swagger
+ * components:
+ *   securitySchemes:
+ *     BearerAuth:
+ *       type: http
+ *       scheme: bearer
+ *       bearerFormat: JWT
+ * 
+ * /api/v1/receivedfundsinfobank/{id}:
+ *   get:
+ *     summary: Fetch the history of amount added to user wallet from bank
+ *     tags: [BankTransaction]
+ *     security:
+ *       - BearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         schema:
+ *           type: integer
+ *         required: true
+ *         description: Id of the user
+ *     responses:
+ *       404:
+ *         description: No transaction found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success: 
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *                   example: No transaction found.
+ *       200:
+ *         description: Successfully fetched the transactions
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 data:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       id:
+ *                         type: integer
+ *                         example: 1
+ *                       senderName:
+ *                         type: string
+ *                         example: "Bank Name"
+ *                       receiverName:
+ *                         type: string
+ *                         example: "Jane Smith"
+ *                       amountTransferred:
+ *                         type: string
+ *                         example: "100.00"
+ *                 message:
+ *                   type: string
+ *                   example: Successfully fetched the transactions.
+ *       500:
+ *         description: Error fetching the transactions
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 message: 
+ *                   type: string
+ *                   example: Error fetching transactions.
+ */
+
+
 export const transferHistoryBankAmountaddToUserWallet = async(req: Request, res: Response): Promise<void> => {
     try {
         authenticate(req, res, async() => {
-            const {userId} = req.body;
+
+            const id = req.params.id;
+            const userId = parseInt(id);
 
             const findTransactions = await prisma.bankTransaction.findMany({
                 where: {
@@ -341,12 +503,94 @@ export const transferHistoryBankAmountaddToUserWallet = async(req: Request, res:
     }
 }
 
+/**
+ * @swagger
+ * components:
+ *   securitySchemes:
+ *     BearerAuth:
+ *       type: http
+ *       scheme: bearer
+ *       bearerFormat: JWT
+ * 
+ * /api/v1/sentfundsinfobank/{id}:
+ *   get:
+ *     summary: Fetch the history of withdraw to bank account from wallet
+ *     tags: [BankTransaction]
+ *     security:
+ *       - BearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         schema:
+ *           type: integer
+ *         required: true
+ *         description: Id of the user
+ *     responses:
+ *       404:
+ *         description: No transaction found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success: 
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *                   example: No transaction found.
+ *       200:
+ *         description: Successfully fetched the transactions
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 data:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       id:
+ *                         type: integer
+ *                         example: 1
+ *                       senderName:
+ *                         type: string
+ *                         example: "Luke Skywalker"
+ *                       receiverName:
+ *                         type: string
+ *                         example: "Bank Name"
+ *                       amountTransferred:
+ *                         type: string
+ *                         example: "100.00"
+ *                 message:
+ *                   type: string
+ *                   example: Successfully fetched the transactions.
+ *       500:
+ *         description: Error fetching the transactions
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 message: 
+ *                   type: string
+ *                   example: Error fetching transactions.
+ */
 
 export const transferHistoryWithdrawToBankAcc = async(req: Request, res: Response): Promise<void> => {
     try {
 
         authenticate(req, res, async() => {
-            const {userId} = req.body;
+
+            const id = req.params.id;
+            const userId = parseInt(id);
 
             const findTransactions = await prisma.bankTransaction.findMany({
                 where: {
@@ -385,11 +629,95 @@ export const transferHistoryWithdrawToBankAcc = async(req: Request, res: Respons
     }
 }
 
+/**
+ * @swagger
+ * components:
+ *   securitySchemes:
+ *     BearerAuth:
+ *       type: http
+ *       scheme: bearer
+ *       bearerFormat: JWT
+ * 
+ * /api/v1/sentfundsmerchantinfo/{id}:
+ *   get:
+ *     summary: Fetch the history of funds sent to merchants
+ *     tags: [MerchantTransaction]
+ *     security:
+ *       - BearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         schema:
+ *           type: integer
+ *         required: true
+ *         description: Id of the user
+ *     responses:
+ *       404:
+ *         description: No transaction found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success: 
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *                   example: No transaction found.
+ *       200:
+ *         description: Successfully fetched the transactions
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 data:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       id:
+ *                         type: integer
+ *                         example: 1
+ *                       senderName:
+ *                         type: string
+ *                         example: "Luke Skywalker"
+ *                       receiverName:
+ *                         type: string
+ *                         example: "Obi-Wan Kenobi"
+ *                       amountTransferred:
+ *                         type: string
+ *                         example: "100.00"
+ *                 message:
+ *                   type: string
+ *                   example: Successfully fetched the transactions.
+ *       500:
+ *         description: Error fetching the transactions
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 message: 
+ *                   type: string
+ *                   example: Error fetching transactions.
+ */
+
 
 export const transferFundsMerchantHistory = async(req: Request, res: Response): Promise<void> => {
     try {
         authenticate(req, res, async() => {
-            const {userId} = req.body;
+
+            const id = req.params.id;
+            const userId = parseInt(id);
+
 
         const findTransactions = await prisma.merchantTransaction.findMany({
             where: {

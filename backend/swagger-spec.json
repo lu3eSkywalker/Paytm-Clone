@@ -6,6 +6,220 @@
     "description": "A node.js Express API"
   },
   "paths": {
+    "/api/v1/addbalance": {
+      "post": {
+        "summary": "Add balance to the wallet",
+        "tags": [
+          "Wallet"
+        ],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "userId",
+                  "amount"
+                ],
+                "properties": {
+                  "userId": {
+                    "type": "integer",
+                    "description": "ID of the user"
+                  },
+                  "amount": {
+                    "type": "integer",
+                    "description": "amount to be added to the wallet"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successfully added the balance",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "receiver": {
+                          "type": "integer"
+                        },
+                        "sender": {
+                          "type": "integer"
+                        },
+                        "amount": {
+                          "type": "integer"
+                        }
+                      }
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "User not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Cannot communicate to the bank API",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/deductbalance": {
+      "post": {
+        "summary": "Deduct amount from the wallet",
+        "tags": [
+          "Wallet"
+        ],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "userId",
+                  "amount"
+                ],
+                "properties": {
+                  "userId": {
+                    "type": "integer",
+                    "description": "ID of the user"
+                  },
+                  "amount": {
+                    "type": "integer",
+                    "description": "amount to be deducted from the wallet"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successfully deducted the balance",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "sender": {
+                          "type": "integer"
+                        },
+                        "bankIdReceiver": {
+                          "type": "integer"
+                        },
+                        "amountTransferred": {
+                          "type": "integer"
+                        }
+                      }
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "User not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Cannot communicate to the bank API",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/v1/signupuser": {
       "post": {
         "summary": "Create a new user",
@@ -479,6 +693,230 @@
         }
       }
     },
+    "/api/v1/transferfund": {
+      "post": {
+        "summary": "Transfer funds from one user to another",
+        "tags": [
+          "Wallet"
+        ],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "user1Id": {
+                    "type": "integer",
+                    "description": "ID of the sender"
+                  },
+                  "user2Id": {
+                    "type": "integer",
+                    "description": "ID of the receiver"
+                  },
+                  "amount": {
+                    "type": "integer",
+                    "description": "Amount to be transferred"
+                  }
+                },
+                "required": [
+                  "user1Id",
+                  "user2Id",
+                  "amount"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successfully transferred the funds",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "user1balance": {
+                      "type": "integer",
+                      "example": 900
+                    },
+                    "user2balance": {
+                      "type": "integer",
+                      "example": 1100
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Successfully transferred the funds"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Insufficient Balance",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": false
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Insufficient Balance"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Error transferring the funds",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": false
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Error transferring the funds"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/fundsmerchant": {
+      "post": {
+        "summary": "Transfer funds from one user to another",
+        "tags": [
+          "Wallet"
+        ],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "userId": {
+                    "type": "integer",
+                    "description": "ID of the sender"
+                  },
+                  "MerchantId": {
+                    "type": "integer",
+                    "description": "ID of the merchant"
+                  },
+                  "amount": {
+                    "type": "integer",
+                    "description": "Amount to be transferred"
+                  }
+                },
+                "required": [
+                  "userId",
+                  "MerchantId",
+                  "amount"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successfully transferred the funds",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "userbalance": {
+                      "type": "integer",
+                      "example": 900
+                    },
+                    "merchantbalance": {
+                      "type": "integer",
+                      "example": 1100
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Successfully transferred the funds"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Insufficient Balance",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": false
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Insufficient Balance"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Error transferring the funds",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": false
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Error transferring the funds"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/v1/getuserinfo/{id}": {
       "get": {
         "summary": "Fetch the information of the user",
@@ -655,6 +1093,658 @@
                     "message": {
                       "type": "string",
                       "example": "Error fetching transactions."
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/receivedfundsinfo/{id}": {
+      "get": {
+        "summary": "Fetch the history of received funds",
+        "tags": [
+          "Transaction"
+        ],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "integer"
+            },
+            "required": true,
+            "description": "Id of the user"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully fetched the transactions",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "integer",
+                            "example": 1
+                          },
+                          "senderName": {
+                            "type": "string",
+                            "example": "John Doe"
+                          },
+                          "receiverName": {
+                            "type": "string",
+                            "example": "Jane Smith"
+                          },
+                          "amountTransferred": {
+                            "type": "string",
+                            "example": "100.00"
+                          }
+                        }
+                      }
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Successfully fetched the transactions."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "No transaction found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": false
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "No transaction found."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Error fetching the transactions",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": false
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Error fetching transactions."
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/receivedfundsinfobank/{id}": {
+      "get": {
+        "summary": "Fetch the history of amount added to user wallet from bank",
+        "tags": [
+          "BankTransaction"
+        ],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "integer"
+            },
+            "required": true,
+            "description": "Id of the user"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully fetched the transactions",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "integer",
+                            "example": 1
+                          },
+                          "senderName": {
+                            "type": "string",
+                            "example": "Bank Name"
+                          },
+                          "receiverName": {
+                            "type": "string",
+                            "example": "Jane Smith"
+                          },
+                          "amountTransferred": {
+                            "type": "string",
+                            "example": "100.00"
+                          }
+                        }
+                      }
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Successfully fetched the transactions."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "No transaction found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": false
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "No transaction found."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Error fetching the transactions",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": false
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Error fetching transactions."
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/sentfundsinfobank/{id}": {
+      "get": {
+        "summary": "Fetch the history of withdraw to bank account from wallet",
+        "tags": [
+          "BankTransaction"
+        ],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "integer"
+            },
+            "required": true,
+            "description": "Id of the user"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully fetched the transactions",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "integer",
+                            "example": 1
+                          },
+                          "senderName": {
+                            "type": "string",
+                            "example": "Luke Skywalker"
+                          },
+                          "receiverName": {
+                            "type": "string",
+                            "example": "Bank Name"
+                          },
+                          "amountTransferred": {
+                            "type": "string",
+                            "example": "100.00"
+                          }
+                        }
+                      }
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Successfully fetched the transactions."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "No transaction found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": false
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "No transaction found."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Error fetching the transactions",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": false
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Error fetching transactions."
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/sentfundsmerchantinfo/{id}": {
+      "get": {
+        "summary": "Fetch the history of funds sent to merchants",
+        "tags": [
+          "MerchantTransaction"
+        ],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "integer"
+            },
+            "required": true,
+            "description": "Id of the user"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully fetched the transactions",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "integer",
+                            "example": 1
+                          },
+                          "senderName": {
+                            "type": "string",
+                            "example": "Luke Skywalker"
+                          },
+                          "receiverName": {
+                            "type": "string",
+                            "example": "Obi-Wan Kenobi"
+                          },
+                          "amountTransferred": {
+                            "type": "string",
+                            "example": "100.00"
+                          }
+                        }
+                      }
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Successfully fetched the transactions."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "No transaction found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": false
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "No transaction found."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Error fetching the transactions",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": false
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Error fetching transactions."
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/byname/{name}": {
+      "get": {
+        "summary": "Fetch the user using name",
+        "tags": [
+          "Users"
+        ],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "name",
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "description": "Name of the user"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully fetched the user",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "integer",
+                            "example": 1
+                          },
+                          "name": {
+                            "type": "string",
+                            "example": "Luke Skywalker"
+                          },
+                          "email": {
+                            "type": "string",
+                            "example": "lukeskywalker@gmail.com"
+                          },
+                          "wallet": {
+                            "type": "object"
+                          }
+                        }
+                      }
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "No user exists by this name",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Error fetching the transactions",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": false
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Error fetching the user"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/byemail/{email}": {
+      "get": {
+        "summary": "Fetch the user using name",
+        "tags": [
+          "Users"
+        ],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "email",
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "description": "Email of the user"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully fetched the user",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "integer",
+                            "example": 1
+                          },
+                          "name": {
+                            "type": "string",
+                            "example": "Luke Skywalker"
+                          },
+                          "email": {
+                            "type": "string",
+                            "example": "lukeskywalker@gmail.com"
+                          },
+                          "wallet": {
+                            "type": "object"
+                          }
+                        }
+                      }
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "No user exists by this email",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Error fetching the transactions",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": false
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Error fetching the user"
                     }
                   }
                 }
